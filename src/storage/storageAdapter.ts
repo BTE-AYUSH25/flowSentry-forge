@@ -12,6 +12,7 @@
  * - This module does NOT enforce schemas
  * - This module does NOT infer meaning from values
  */
+import { storage } from "@forge/api";
 
 // -----------------------------
 // Types (implicit by contract)
@@ -97,4 +98,8 @@ export function load(key: string): StorageValue {
       "Stored data could not be read"
     );
   }
+}
+export async function read<T = any>(key: string): Promise<T | null> {
+  const value = await storage.get(key);
+  return value ?? null;
 }

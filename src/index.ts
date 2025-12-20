@@ -15,6 +15,7 @@
  */
 
 // MODULE IMPORTS
+
 import { TimingAnalyzerError } from "./timing-analyzer/timingAnalyzer";
 
 import { ingestEvent } from "./ingestion/eventIngestion";
@@ -24,7 +25,7 @@ import { analyzeGraph } from "./graph-analyzer/graphAnalyzer";
 import { analyzeRules } from "./rule-analyzer/ruleAnalyzer";
 import { computeRisk } from "./risk-engine/riskEngine";
 import { explainRisk } from "./explanation-engine/explanationEngine";
-import { save } from "./storage/storageAdapter";
+
 import { getDashboardData } from "./presentation/jira/dashboard";
 import { renderReport } from "./presentation/confluence/report";
 
@@ -33,7 +34,7 @@ import { jiraClient } from "./providers/jiraClient.mock";
 import { ruleProvider } from "./providers/ruleProvider.mock";
 import { insightProvider } from "./providers/insightProvider.mock";
 
-
+import { save, read } from "./storage/storageAdapter";
 // -----------------------------
 // ENTRYPOINT: Webhook Handler
 // -----------------------------
@@ -117,6 +118,52 @@ try {
   return { status: "OK" };
 }
 
+
+/**
+ * UI Resolver — SAFE, FAST, READ-ONLY
+ * Beginner mistake: recomputing everything here ❌
+ * Correct: read stored snapshot ✅
+ */
+// Forge UI resolver
+export async function getRiskSnapshot(event: any) {
+  const issueKey = event.context.extension.issue.key;
+  const projectKey = issueKey.split("-")[0];
+
+  const snapshot = await read(`snapshot:${projectKey}`);
+
+  return {
+    issueKey,
+    projectKey,
+    ...(snapshot ?? {
+      riskScore: 0,
+      explanation: "No workflow data collected yet.",
+      alerts: []
+    })
+  };
+}
+/**
+ * DEMO ACTION — used ONLY for demo & video
+ * Beginner mistake: wiring UI directly to business logic ❌
+ * Correct: controlled demo trigger ✅
+ */
+export async function runDemoAnalysis(event: any) {
+  const issueKey = event.context.extension.issue.key;
+  const projectKey = issueKey.split("-")[0];
+
+  const demoSnapshot = {
+    riskScore: 0.72,
+    explanation:
+      "High workflow risk detected. Issues spend excessive time in IN_PROGRESS.",
+    alerts: [
+      "Bottleneck detected at IN_PROGRESS",
+      "Dead-end state detected: DONE"
+    ]
+  };
+
+  await save(`snapshot:${projectKey}`, demoSnapshot);
+
+  return demoSnapshot;
+}
 /**
  * Forge entrypoint
  * DO NOT put business logic here.

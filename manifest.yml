@@ -1,6 +1,5 @@
 app:
   id: ari:cloud:ecosystem::app/f0631c69-d671-47ec-bebe-f607baf1a3a4
-
   runtime:
     name: nodejs22.x
 
@@ -19,11 +18,9 @@ modules:
         function: flowsentry-ui-resolver
 
   function:
-    - key: flowsentry-handler
-      handler: src/index.run
-
-    - key: flowsentry-ui-resolver
-      handler: src/index.getRiskSnapshot
+    - key: flowsentry-demo
+      handler: index.runDemoAnalysis
+      
 
 resources:
   - key: main
