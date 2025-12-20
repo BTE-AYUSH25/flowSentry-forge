@@ -1,0 +1,45 @@
+{
+  "project": "FlowSentry",
+  "version": "1.0.0",
+  "architecture": "Modular Contract-Based",
+  "locks": {
+    "Module1_Ingestion": {
+      "input": "RawEvent",
+      "output": "NormalizedEvent",
+      "required_fields": ["eventId", "projectId", "issueId", "timestamp"]
+    },
+    "Module3_Graph": {
+      "input": "WorkflowDefinition",
+      "output": "GraphAnalysis",
+      "contract_bounds": {
+        "cycles": "string[][]",
+        "deadEnds": "string[]"
+      }
+    },
+    "Module4_Timing": {
+      "input": "TimingEvent",
+      "output": "TimingAnalysis",
+      "threshold": "1.5x Global Average"
+    },
+    "Module6_Risk": {
+      "input": ["GraphAnalysis", "TimingAnalysis", "RuleConflictReport"],
+      "output": "RiskScore",
+      "weights": {
+        "structure": 0.4,
+        "timing": 0.4,
+        "automation": 0.2
+      }
+    },
+    "Module7_Explanation": {
+      "input": ["RiskScore", "Analyses"],
+      "output": "Explanation",
+      "fields": ["summary", "details"]
+    },
+    "Module9_Storage": {
+      "strategy": "Key-Value Pair",
+      "key_format": "snapshot:{projectId}",
+      "persistence": "Forge Storage API"
+    }
+  },
+  "validation_status": "LOCKED"
+}
