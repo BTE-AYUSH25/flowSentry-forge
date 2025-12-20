@@ -20,9 +20,11 @@
 // -----------------------------
 // IMPORT ORCHESTRATOR + PROVIDERS
 // -----------------------------
+console.log("🔥 DEMO FILE LOADED");
 
-import { handleJiraWebhook } from "../src/index";
-import type { RiskSnapshot } from "../src/types/snapshot";
+import { handleJiraWebhook } from "../src/index.ts";
+
+import type { RiskSnapshot } from "../src/types/snapshot.ts";
 
 // -----------------------------
 // DEMO ENTRYPOINT
@@ -40,26 +42,45 @@ async function runDemo() {
    * - Sending random or incomplete payloads
    * We use a REALISTIC Jira-like structure.
    */
-  const demoWebhookEvent = {
-    source: "jira",
-    eventType: "issue_transitioned",
-    receivedAt: "2024-01-01T10:00:00Z",
-    payload: {
-      issue: {
-        id: "ISSUE-1",
-        fields: {
-          project: { id: "DEMO-PROJ" }
-        }
-      },
-      changelog: {
-        fromString: "IN_REVIEW",
-        toString: "DONE"
+  const demoWebhookEvent1 = {
+  source: "jira",
+  eventType: "issue_transitioned",
+  receivedAt: "2024-01-01T10:00:00Z",
+  payload: {
+    issue: {
+      id: "ISSUE-1",
+      fields: {
+        project: { id: "DEMO-PROJ" }
       }
+    },
+    changelog: {
+      fromString: "TODO",
+      toString: "IN_REVIEW"
     }
-  };
+  }
+};
+const demoWebhookEvent2 = {
+  source: "jira",
+  eventType: "issue_transitioned",
+  receivedAt: "2024-01-03T10:00:00Z", // later timestamp
+  payload: {
+    issue: {
+      id: "ISSUE-1",
+      fields: {
+        project: { id: "DEMO-PROJ" }
+      }
+    },
+    changelog: {
+      fromString: "IN_REVIEW",
+      toString: "DONE"
+    }
+  }
+};
+
 
   console.log("📥 Incoming Jira Event:");
-  console.log(JSON.stringify(demoWebhookEvent, null, 2));
+  console.log(JSON.stringify(demoWebhookEvent1, null, 2));
+  console.log(JSON.stringify(demoWebhookEvent2, null, 2));
   console.log("\n------------------------------------\n");
 
   /**
@@ -75,10 +96,11 @@ async function runDemo() {
    * - Explanation generation
    * - Storage snapshot
    */
-  const result = await handleJiraWebhook(demoWebhookEvent);
+  const result1 = await handleJiraWebhook(demoWebhookEvent1);
+  const result2 = await handleJiraWebhook(demoWebhookEvent2);
 
   console.log("✅ Webhook processed:");
-  console.log(result);
+  console.log(result1,result2);
   console.log("\n------------------------------------\n");
 
   /**
@@ -89,10 +111,10 @@ async function runDemo() {
    * We ONLY read prepared insights.
    */
   const { getDashboardData } = await import(
-    "../src/presentation/jira/dashboard"
+    "../src/presentation/jira/dashboard.ts"
   );
   const { insightProvider } = await import(
-    "../src/providers/insightProvider.mock"
+    "../src/providers/insightProvider.mock.ts"
   );
 
   const dashboard = await getDashboardData(
@@ -110,11 +132,11 @@ async function runDemo() {
    * This is static rendering from facts.
    */
   const { renderReport } = await import(
-    "../src/presentation/confluence/report"
+    "../src/presentation/confluence/report.ts"
   );
 
   // Load snapshot directly for report data
-  const { load } = await import("../src/storage/storageAdapter");
+  const { load } = await import("../src/storage/storageAdapter.ts");
 
 
 const snapshot = load("snapshot:DEMO-PROJ") as RiskSnapshot | null;

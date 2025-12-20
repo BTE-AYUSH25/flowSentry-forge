@@ -1,26 +1,15 @@
 /**
  * Forge entrypoint for FlowSentry
- *
- * This file proves:
- * - Forge runtime usage
- * - Atlassian integration
- *
- * IMPORTANT:
- * - No business logic here
- * - Calls existing orchestrator only
  */
 
 import Resolver from "@forge/resolver";
-import { handleJiraWebhook } from "../src/index";
+import { handleJiraWebhook } from "../src/index.ts";
 
-const resolver = new Resolver();
+// 🔑 TypeScript fix: Forge Resolver is constructable at runtime,
+// but its NodeNext typings don't declare it.
+const resolver = new (Resolver as unknown as { new (): any })();
 
-/**
- * Minimal Forge function
- * Triggered by Jira UI or manually for demo
- */
 resolver.define("run", async () => {
-  // Simulated Jira event (same as demo.ts)
   await handleJiraWebhook({
     source: "jira",
     eventType: "issue_transitioned",
@@ -28,7 +17,9 @@ resolver.define("run", async () => {
     payload: {
       issue: {
         id: "ISSUE-1",
-        fields: { project: { id: "DEMO-PROJ" } }
+        fields: {
+          project: { id: "DEMO-PROJ" }
+        }
       },
       changelog: {
         fromString: "IN_REVIEW",

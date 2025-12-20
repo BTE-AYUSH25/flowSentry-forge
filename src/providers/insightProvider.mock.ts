@@ -1,5 +1,5 @@
-import { load } from "../storage/storageAdapter";
-import type { RiskSnapshot } from "../types/snapshot";
+import { load } from "../storage/storageAdapter.ts";
+import type { RiskSnapshot } from "../types/snapshot.ts";
 
 export const insightProvider = {
   async fetchInsights(projectId: string) {

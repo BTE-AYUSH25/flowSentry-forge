@@ -1,27 +1,17 @@
 {
   "name": "flowsentry-forge",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "demo": "node --loader ts-node/esm scripts/demo.ts"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/BTE-AYUSH25/flowsentry-forge.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/BTE-AYUSH25/flowsentry-forge/issues"
-  },
-  "homepage": "https://github.com/BTE-AYUSH25/flowsentry-forge#readme",
   "dependencies": {
-    "@forge/api": "^6.4.2",
-    "@forge/resolver": "^1.7.1",
+    "@forge/api": "^3.8.0",
+    "@forge/resolver": "^1.5.0"
+  },
+  "devDependencies": {
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.4.0"
   }
 }

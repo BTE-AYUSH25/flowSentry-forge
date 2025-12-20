@@ -1,41 +1,32 @@
 {
   "compilerOptions": {
-    /* Language and runtime */
-    "target": "ES2020",
-    "lib": ["ES2020"],
-    
-    /* Module system */
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    
-    /* Paths */
-    "rootDir": ".",
-    "outDir": "dist",
+    /* Language & Runtime */
+    "target": "ES2022",
+    "lib": ["ES2022"],
 
-    /* Type safety */
+    /* Node ESM (IMPORTANT) */
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    /* Allow .ts extensions in imports */
+    "allowImportingTsExtensions": true,
+
+    /* Strictness */
     "strict": true,
-    "noImplicitAny": true,
     "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
 
     /* Interop */
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-
-    /* Build behavior */
-    "skipLibCheck": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
 
-    /* Node compatibility */
-    "types": ["node"]
+    /* No build output (ts-node only) */
+    "noEmit": true
   },
+
   "include": [
-    "src",
-    "scripts",
-    "forge"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
+    "src/**/*",
+    "scripts/**/*",
+    "forge/**/*"
   ]
 }
