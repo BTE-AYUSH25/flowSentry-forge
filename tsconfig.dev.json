@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    /* Language & Runtime */
+    "target": "ES2022",
+    "lib": ["ES2022"],
+
+    /* Node ESM (IMPORTANT for ts-node) */
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    /* Allow .ts extensions in imports (Node requirement) */
+    "allowImportingTsExtensions": true,
+
+    /* Strictness */
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+
+    /* Interop */
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+
+    /* No build output (ts-node only) */
+    "noEmit": true
+  },
+
+  "include": [
+    "src/**/*",
+    "scripts/**/*",
+    "forge/**/*"
+  ]
+}

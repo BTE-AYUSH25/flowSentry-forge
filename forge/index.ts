@@ -3,7 +3,7 @@
  */
 
 import Resolver from "@forge/resolver";
-import { handleJiraWebhook } from "../src/index.ts";
+import { handleJiraWebhook } from "../src/index";
 
 // 🔑 TypeScript fix: Forge Resolver is constructable at runtime,
 // but its NodeNext typings don't declare it.

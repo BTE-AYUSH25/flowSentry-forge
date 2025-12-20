@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "demo": "node --loader ts-node/esm scripts/demo.ts"
+    "demo": "ts-node --project tsconfig.dev.json scripts/demo.ts"
   },
   "dependencies": {
     "@forge/api": "^3.8.0",

@@ -1,0 +1,30 @@
+app:
+  id: ari:cloud:ecosystem::app/f0631c69-d671-47ec-bebe-f607baf1a3a4
+
+  runtime:
+    name: nodejs22.x
+
+permissions:
+  scopes:
+    - read:jira-work
+    - storage:app
+
+modules:
+  jira:issuePanel:
+    - key: flowsentry-panel
+      title: FlowSentry Risk Insights
+      icon: https://developer.atlassian.com/platform/forge/images/issue-panel-icon.svg
+      resource: main
+      resolver:
+        function: flowsentry-ui-resolver
+
+  function:
+    - key: flowsentry-handler
+      handler: src/index.run
+
+    - key: flowsentry-ui-resolver
+      handler: src/index.getRiskSnapshot
+
+resources:
+  - key: main
+    path: static/frontend

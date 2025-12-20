@@ -15,23 +15,23 @@
  */
 
 // MODULE IMPORTS
-import { TimingAnalyzerError } from "./timing-analyzer/timingAnalyzer.ts";
+import { TimingAnalyzerError } from "./timing-analyzer/timingAnalyzer";
 
-import { ingestEvent } from "./ingestion/eventIngestion.ts";
-import { updateTiming, computeBottlenecks } from "./timing-analyzer/timingAnalyzer.ts";
-import { resolveWorkflow } from "./workflow-resolver/workflowResolver.ts";
-import { analyzeGraph } from "./graph-analyzer/graphAnalyzer.ts";
-import { analyzeRules } from "./rule-analyzer/ruleAnalyzer.ts";
-import { computeRisk } from "./risk-engine/riskEngine.ts";
-import { explainRisk } from "./explanation-engine/explanationEngine.ts";
-import { save } from "./storage/storageAdapter.ts";
-import { getDashboardData } from "./presentation/jira/dashboard.ts";
-import { renderReport } from "./presentation/confluence/report.ts";
+import { ingestEvent } from "./ingestion/eventIngestion";
+import { updateTiming, computeBottlenecks } from "./timing-analyzer/timingAnalyzer";
+import { resolveWorkflow } from "./workflow-resolver/workflowResolver";
+import { analyzeGraph } from "./graph-analyzer/graphAnalyzer";
+import { analyzeRules } from "./rule-analyzer/ruleAnalyzer";
+import { computeRisk } from "./risk-engine/riskEngine";
+import { explainRisk } from "./explanation-engine/explanationEngine";
+import { save } from "./storage/storageAdapter";
+import { getDashboardData } from "./presentation/jira/dashboard";
+import { renderReport } from "./presentation/confluence/report";
 
 // External providers (mocked for demo / CI)
-import { jiraClient } from "./providers/jiraClient.mock.ts";
-import { ruleProvider } from "./providers/ruleProvider.mock.ts";
-import { insightProvider } from "./providers/insightProvider.mock.ts";
+import { jiraClient } from "./providers/jiraClient.mock";
+import { ruleProvider } from "./providers/ruleProvider.mock";
+import { insightProvider } from "./providers/insightProvider.mock";
 
 
 // -----------------------------
@@ -68,7 +68,7 @@ try {
   timingAnalysis = computeBottlenecks(
     normalizedEvent.projectId
   );
-} catch (err) {
+} catch (err:any) {
   // Beginner mistake:
   // Catching ALL errors silently.
   // We ONLY catch the expected "no data yet" case.
@@ -114,5 +114,18 @@ try {
     explanation
   });
 
+  return { status: "OK" };
+}
+
+/**
+ * Forge entrypoint
+ * DO NOT put business logic here.
+ * Forge requires this exact export.
+ */
+/**
+ * Forge-required entrypoint.
+ * Must exist for handler: index.run
+ */
+export async function run(event: any, context: any) {
   return { status: "OK" };
 }

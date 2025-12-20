@@ -20,7 +20,7 @@
 // -----------------------------
 // IMPORT ORCHESTRATOR + PROVIDERS
 // -----------------------------
-console.log("🔥 DEMO FILE LOADED");
+console.log(" DEMO FILE LOADED");
 
 import { handleJiraWebhook } from "../src/index.ts";
 
