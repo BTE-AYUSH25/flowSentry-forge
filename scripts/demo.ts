@@ -22,6 +22,7 @@
 // -----------------------------
 
 import { handleJiraWebhook } from "../src/index";
+import type { RiskSnapshot } from "../src/types/snapshot";
 
 // -----------------------------
 // DEMO ENTRYPOINT
@@ -115,13 +116,19 @@ async function runDemo() {
   // Load snapshot directly for report data
   const { load } = await import("../src/storage/storageAdapter");
 
-  const snapshot = load("snapshot:DEMO-PROJ");
 
-  const report = renderReport("DEMO-PROJ", {
-    riskScore: snapshot.riskScore.overallScore,
-    summary: snapshot.explanation.summary,
-    details: snapshot.explanation.details
-  });
+const snapshot = load("snapshot:DEMO-PROJ") as RiskSnapshot | null;
+
+if (!snapshot) {
+  throw new Error("Snapshot not found. Demo cannot continue.");
+}
+
+const report = renderReport("DEMO-PROJ", {
+  riskScore: snapshot.riskScore.overallScore,
+  summary: snapshot.explanation.summary,
+  details: snapshot.explanation.details
+});
+
 
   console.log("📄 Confluence Report:");
   console.log("Title:", report.title);

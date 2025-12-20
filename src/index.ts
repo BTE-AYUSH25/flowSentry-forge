@@ -27,9 +27,11 @@ import { getDashboardData } from "./presentation/jira/dashboard";
 import { renderReport } from "./presentation/confluence/report";
 
 // External providers (injected)
-import { jiraClient } from "./providers/jiraClient";
-import { ruleProvider } from "./providers/ruleProvider";
-import { insightProvider } from "./providers/insightProvider";
+// External providers (mocked for demo / CI)
+import { jiraClient } from "./providers/jiraClient.mock";
+import { ruleProvider } from "./providers/ruleProvider.mock";
+import { insightProvider } from "./providers/insightProvider.mock";
+
 
 // -----------------------------
 // ENTRYPOINT: Webhook Handler
