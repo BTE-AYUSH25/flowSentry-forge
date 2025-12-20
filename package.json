@@ -1,0 +1,27 @@
+{
+  "name": "flowsentry-forge",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BTE-AYUSH25/flowsentry-forge.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/BTE-AYUSH25/flowsentry-forge/issues"
+  },
+  "homepage": "https://github.com/BTE-AYUSH25/flowsentry-forge#readme",
+  "dependencies": {
+    "@forge/api": "^6.4.2",
+    "@forge/resolver": "^1.7.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
