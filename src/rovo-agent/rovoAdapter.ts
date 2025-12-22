@@ -1,7 +1,4 @@
-/**
- * MODULE 11: Rovo AI Agent Adapter
- * Purpose: Bridge FlowSentry's deterministic analysis with Rovo's conversational AI
- */
+// src/rovo-agent/rovoAdapter.ts
 
 export type RovoAnalysis = {
   analysis: string;
@@ -28,8 +25,8 @@ export class FlowSentryRovoAgent {
     // Map intent from query
     const intent = this.analyzeIntent(naturalLanguageQuery);
     
-    // Simulate analysis without importing other modules
-    await this.delay(500); // Simulate processing time
+    // Simulate processing time
+    await this.delay(500);
     
     // Generate mock response based on query type
     const analysisResult = this.generateMockResponse(intent);
@@ -124,7 +121,7 @@ export class FlowSentryRovoAgent {
       }
     };
 
-    return responses[intent.type as keyof typeof responses] || {
+    const response = responses[intent.type as keyof typeof responses] || {
       analysis: 'Comprehensive workflow analysis complete. No critical issues detected, but optimization opportunities exist.',
       dataPoints: [{ type: 'general', message: 'Workflow operating within normal parameters' }],
       suggestedActions: [
@@ -134,6 +131,8 @@ export class FlowSentryRovoAgent {
       ],
       confidence: 0.75
     };
+
+    return response;
   }
 
   private delay(ms: number): Promise<void> {

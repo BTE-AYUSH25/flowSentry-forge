@@ -2,24 +2,24 @@
   "name": "flowsentry-forge",
   "version": "2.0.0",
   "private": true,
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "demo": "ts-node --project tsconfig.dev.json scripts/demo.ts",
     "competition-demo": "ts-node --project tsconfig.dev.json scripts/competition-demo.ts",
     "quick-demo": "ts-node --project tsconfig.dev.json scripts/competition-demo.ts --quick",
     "technical": "ts-node --project tsconfig.dev.json scripts/competition-demo.ts --technical",
-    "deploy": "echo 'Run: forge deploy'",
-    "tunnel": "echo 'Run: forge tunnel'"
+    "deploy": "forge deploy",
+    "tunnel": "forge tunnel"
   },
   "dependencies": {
-    "@forge/api": "^6.4.2",
-    "@forge/bridge": "^4.0.0",
-    "@forge/react": "^11.9.0",
-    "@forge/resolver": "^1.7.1"
+    "@forge/api": "^3.8.0",
+    "@forge/resolver": "^1.5.0",
+    "@forge/react": "^10.0.0",
+    "@forge/bridge": "^4.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.19.27",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.0"
+    "typescript": "^5.4.0",
+    "@types/node": "^20.0.0"
   }
 }

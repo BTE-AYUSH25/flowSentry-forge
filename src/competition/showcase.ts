@@ -2,8 +2,8 @@
  * Showcase features for competition demonstration
  */
 
-import { FlowSentryRovoAgent } from '../rovo-agent/rovoAdapter.ts';
-import { CompetitionMode } from './competition-mode.ts';
+import { FlowSentryRovoAgent } from '../rovo-agent/rovoAdapter';
+import { CompetitionMode } from './competition-mode';
 
 export class CompetitionShowcase {
   private rovoAgent: FlowSentryRovoAgent;

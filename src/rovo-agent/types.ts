@@ -1,3 +1,5 @@
+// src/rovo-agent/types.ts
+
 /**
  * Type definitions for Rovo AI Agent integration
  */

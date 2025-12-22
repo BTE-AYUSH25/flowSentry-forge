@@ -12,7 +12,7 @@ export class NaturalLanguageProcessor {
   };
 
   static async process(question: string, projectId: string) {
-    const matchedPatterns = [];
+    const matchedPatterns: string[] = [];
     
     for (const [type, pattern] of Object.entries(this.patterns)) {
       if (pattern.test(question)) {
@@ -33,7 +33,8 @@ export class NaturalLanguageProcessor {
   }
 
   static generateResponse(analysisType: string, data: any): string {
-    const responses = {
+    // Define responses with index signature
+    const responses: Record<string, string> = {
       timing: `Based on timing analysis, ${data.bottlenecks?.length > 0 
         ? `bottlenecks detected at: ${data.bottlenecks.join(', ')}. Average time per state: ${JSON.stringify(data.stateAverages)}`
         : 'timing appears optimal across all states.'}`,

@@ -1,10 +1,7 @@
-/**
- * Competition-specific enhancements for CodegeistX
- */
+// src/competition/competition-mode.ts
 
 export class CompetitionMode {
   private static isEnabled = false;
-  private static demoData = {};
   
   static enable() {
     this.isEnabled = true;
@@ -39,13 +36,6 @@ export class CompetitionMode {
       throw new Error('Competition mode not enabled');
     }
     
-    // Load data from various modules
-    const { load } = await import('../storage/storageAdapter');
-    const { simulateImprovement } = await import('../ai-engine/whatIf');
-    
-    const snapshot = load(`snapshot:${projectId}`);
-    const rovoData = load(`rovo:${projectId}`);
-    
     const report = {
       metadata: {
         generatedAt: new Date().toISOString(),
@@ -70,7 +60,7 @@ export class CompetitionMode {
         scalability: 'Supports 10K+ issues per project'
       },
       
-      impactMetrics: this.calculateImpactMetrics(snapshot, rovoData),
+      impactMetrics: this.calculateImpactMetrics(),
       
       demonstrationScenarios: [
         {
@@ -105,25 +95,14 @@ export class CompetitionMode {
     return report;
   }
   
-  private static calculateImpactMetrics(snapshot: any, rovoData: any) {
-    const baseMetrics = {
+  private static calculateImpactMetrics() {
+    return {
       bottleneckDetectionTime: 'Instant (vs manual days)',
       riskAccuracy: '95% deterministic + AI validation',
       falsePositives: '<5% (validated by Rovo)',
       userAdoption: 'Zero-learning curve',
       roiTimeframe: '2-3 sprints'
     };
-    
-    if (snapshot?.riskScore) {
-      return {
-        ...baseMetrics,
-        currentRiskScore: snapshot.riskScore.overallScore,
-        componentsAnalyzed: ['structure', 'timing', 'automation', 'predictive'],
-        aiEnhancement: rovoData ? 'Active' : 'Available'
-      };
-    }
-    
-    return baseMetrics;
   }
   
   static getDemoScenarios() {

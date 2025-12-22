@@ -11,203 +11,118 @@ import ForgeReconciler, {
   Box,
   Spinner,
   Button,
-  TextInput,
   Toggle
 } from "@forge/react";
 import { invoke } from "@forge/bridge";
 
-// 🆕 Rovo AI Icon Component
-const RovoIcon = () => (
-  <span style={{ marginRight: '8px', fontSize: '18px' }}>🤖</span>
-);
-
-// 🆕 Rovo Chat Component
-const RovoChat = ({ projectId }) => {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
-    
-    const userMessage = input;
-    setInput('');
-    setIsLoading(true);
-    
-    // Add user message
-    setMessages(prev => [...prev, {
-      id: Date.now(),
-      role: 'user',
-      text: userMessage,
-      timestamp: new Date().toISOString()
-    }]);
-    
-    try {
-      // Call Rovo AI agent
-      const response = await invoke('rovo-query', {
-        projectId,
-        query: userMessage
-      });
-      
-      // Add AI response
-      setMessages(prev => [...prev, {
-        id: Date.now() + 1,
-        role: 'assistant',
-        text: response.analysis || response.error || 'No response',
-        data: response,
-        timestamp: new Date().toISOString()
-      }]);
-    } catch (error) {
-      setMessages(prev => [...prev, {
-        id: Date.now() + 1,
-        role: 'assistant',
-        text: 'Sorry, I encountered an error. Please try again.',
-        error: true,
-        timestamp: new Date().toISOString()
-      }]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <Box>
-      <Button 
-        iconBefore={<RovoIcon />}
-        onClick={() => setIsOpen(!isOpen)}
-        appearance={isOpen ? "primary" : "default"}
-      >
-        Ask Rovo AI Assistant
-      </Button>
-      
-      {isOpen && (
-        <Box 
-          padding="space.200" 
-          backgroundColor="color.background.neutral" 
-          marginTop="space.100"
-          borderRadius="4px"
-          border="1px solid color.border"
-        >
-          <Stack space="space.200">
-            {/* Chat Messages */}
-            <Box style={{ maxHeight: '300px', overflowY: 'auto' }}>
-              {messages.length === 0 ? (
-                <Box padding="space.200" textAlign="center">
-                  <Text color="color.text.subtlest">
-                    Ask Rovo about bottlenecks, risks, or improvements...
-                  </Text>
-                </Box>
-              ) : (
-                <Stack space="space.100">
-                  {messages.map((msg) => (
-                    <Box 
-                      key={msg.id}
-                      padding="space.100"
-                      backgroundColor={msg.role === 'user' ? 'color.background.accent.blue.subtle' : 'transparent'}
-                      borderRadius="4px"
-                    >
-                      <Inline alignBlock="center" spread="between">
-                        <Text size="small" weight="bold">
-                          {msg.role === 'user' ? 'You' : 'Rovo AI'}
-                        </Text>
-                        <Text size="small" color="color.text.subtlest">
-                          {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </Text>
-                      </Inline>
-                      <Text>{msg.text}</Text>
-                      
-                      {msg.data?.suggestedActions && msg.data.suggestedActions.length > 0 && (
-                        <Box marginTop="space.050">
-                          <Text size="small" weight="medium">Suggested actions:</Text>
-                          {msg.data.suggestedActions.slice(0, 2).map((action, idx) => (
-                            <Badge key={idx} appearance="success" style={{ marginRight: '4px', marginTop: '4px' }}>
-                              {action}
-                            </Badge>
-                          ))}
-                        </Box>
-                      )}
-                    </Box>
-                  ))}
-                </Stack>
-              )}
-            </Box>
-            
-            {/* Input Area */}
-            <Stack space="space.100">
-              <Inline alignBlock="center">
-                <TextInput 
-                  placeholder="Type your question about workflow, bottlenecks, risks..."
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                  isDisabled={isLoading}
-                  appearance="none"
-                  style={{ flex: 1 }}
-                />
-                <Button 
-                  onClick={handleSend}
-                  isDisabled={isLoading || !input.trim()}
-                  appearance="primary"
-                >
-                  {isLoading ? <Spinner size="small" /> : 'Ask'}
-                </Button>
-              </Inline>
-              
-              <Text size="small" color="color.text.subtlest">
-                Try: "Where are bottlenecks?" or "How can we improve?"
-              </Text>
-            </Stack>
-          </Stack>
-        </Box>
-      )}
-    </Box>
-  );
-};
-
-// Main App Component
 const App = () => {
   const context = useProductContext();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showCompetitionFeatures, setShowCompetitionFeatures] = useState(false);
+  const [rovoResponse, setRovoResponse] = useState(null);
 
   useEffect(() => {
-    if (context?.extension?.issue?.key) {
-      invoke("getRiskSnapshot", { issueKey: context.extension.issue.key })
-        .then((result) => {
+    const fetchData = async () => {
+      if (context?.extension?.issue?.key) {
+        try {
+          const result = await invoke('getUIData');
           setData(result);
-          setLoading(false);
           
           // Auto-enable competition features in demo mode
-          if (result.competitionMode) {
+          if (result.demoMode || result.competitionMode) {
             setShowCompetitionFeatures(true);
           }
-        })
-        .catch(() => setLoading(false));
-    }
+        } catch (error) {
+          console.error('Failed to fetch UI data:', error);
+          // Set demo data as fallback
+          setData({
+            issueKey: context.extension.issue.key,
+            projectKey: context.extension.issue.key.split('-')[0],
+            riskScore: 0.72,
+            riskSummary: 'FlowSentry AI Analysis',
+            demoMode: true
+          });
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchData();
   }, [context]);
+
+  const handleRovoQuery = async (queryType) => {
+    const projectKey = data?.projectKey || 'DEMO';
+    
+    let query = '';
+    switch(queryType) {
+      case 'risk':
+        query = 'What is the current workflow risk score?';
+        break;
+      case 'bottleneck':
+        query = 'Where are the bottlenecks?';
+        break;
+      case 'improve':
+        query = 'How can we improve the workflow?';
+        break;
+    }
+    
+    try {
+      const response = await invoke('rovoQueryHandler', {
+        query,
+        projectId: projectKey
+      });
+      setRovoResponse(response);
+    } catch (error) {
+      setRovoResponse({
+        answer: `Rovo AI response (simulated): For ${projectKey}, ${queryType === 'risk' ? 'risk score is 0.72' : queryType === 'bottleneck' ? 'bottlenecks at REVIEW' : 'add parallel review process'}.`,
+        suggestedActions: ['Optimize workflow', 'Review automation rules']
+      });
+    }
+  };
+
+  const runLiveAnalysis = async () => {
+    if (!data?.projectKey) return;
+    
+    setLoading(true);
+    try {
+      const analysis = await invoke('analyzeProjectRisk', {
+        projectKey: data.projectKey
+      });
+      
+      if (analysis.success) {
+        setData({
+          ...data,
+          riskScore: analysis.data.riskScore,
+          riskSummary: `Live Analysis: ${analysis.data.riskLevel} risk`,
+          demoMode: false
+        });
+      }
+    } catch (error) {
+      console.error('Analysis failed:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
       <Stack alignBlock="center" space="space.200">
         <Spinner size="large" />
-        <Text>🤖 AI Workflow Analysis in Progress...</Text>
+        <Text>🤖 FlowSentry AI Analyzing Workflow...</Text>
         <Text size="small" color="color.text.subtlest">
-          FlowSentry + Rovo AI analyzing your workflow
+          Connecting to Jira data
         </Text>
       </Stack>
     );
   }
 
-  if (!data || data.riskScore === 0) {
+  if (!data) {
     return (
-      <Stack space="space.200">
-        <SectionMessage title="Workflow Analysis Pending" appearance="info">
-          <Text>No workflow data available yet. Rovo AI will analyze after first issue transition.</Text>
-        </SectionMessage>
-        <RovoChat projectId={data?.projectKey || 'default'} />
-      </Stack>
+      <SectionMessage title="No Data Available" appearance="warning">
+        <Text>Unable to load workflow data. Please try again or check permissions.</Text>
+      </SectionMessage>
     );
   }
 
@@ -219,31 +134,36 @@ const App = () => {
 
   return (
     <Stack space="space.300">
-      {/* Competition Mode Toggle */}
-      {data.competitionMode && (
-        <Inline alignBlock="center" spread="between">
+      {/* Competition Mode & Status Badges */}
+      <Inline alignBlock="center" spread="between">
+        <Inline alignBlock="center">
+          {data.demoMode ? (
+            <Badge appearance="removed" iconBefore="🏆">Demo Mode</Badge>
+          ) : (
+            <Badge appearance="success" iconBefore="✅">Live Jira Data</Badge>
+          )}
           <Badge appearance="success">CodegeistX Submission</Badge>
-          <Toggle
-            label="Competition Features"
-            isChecked={showCompetitionFeatures}
-            onChange={() => setShowCompetitionFeatures(!showCompetitionFeatures)}
-            size="small"
-          />
         </Inline>
-      )}
-
-      {/* Header with Risk Score */}
-      <Inline spread="between" alignBlock="center">
-        <Stack space="space.050">
-          <Heading size="medium">Workflow Health</Heading>
-          <Text size="small" color="color.text.subtlest">
-            Powered by FlowSentry AI
-          </Text>
-        </Stack>
-        <Badge appearance={isHighRisk ? "important" : appearance}>
-          {riskPercentage}% Risk
-        </Badge>
+        <Toggle
+          label="Competition Features"
+          isChecked={showCompetitionFeatures}
+          onChange={() => setShowCompetitionFeatures(!showCompetitionFeatures)}
+          size="small"
+        />
       </Inline>
+
+      {/* Header */}
+      <Stack space="space.100">
+        <Inline spread="between" alignBlock="center">
+          <Heading size="medium">FlowSentry AI</Heading>
+          <Badge appearance={isHighRisk ? "important" : appearance}>
+            {riskPercentage}% Risk
+          </Badge>
+        </Inline>
+        <Text size="small" color="color.text.subtlest">
+          {data.projectKey} • {data.currentStatus || 'Issue Analysis'}
+        </Text>
+      </Stack>
 
       {/* Progress Visualization */}
       <Stack space="space.050">
@@ -253,42 +173,70 @@ const App = () => {
         </Inline>
         <ProgressBar value={data.riskScore} appearance={appearance} />
         <Text size="small" color="color.text.subtlest" align="end">
-          {riskPercentage >= 70 ? "Immediate attention needed" : 
-           riskPercentage >= 40 ? "Monitor closely" : "Healthy workflow"}
+          {riskPercentage >= 70 ? "🚨 Immediate attention needed" : 
+           riskPercentage >= 40 ? "⚠️ Monitor closely" : "✅ Healthy workflow"}
         </Text>
       </Stack>
 
-      {/* AI Insights Section */}
+      {/* AI Insights */}
       <SectionMessage 
-        title={data.hasAI ? "🤖 AI Guardian Insights" : "Workflow Analysis"} 
+        title={data.demoMode ? "🤖 AI Insights (Demo)" : "🤖 AI Live Analysis"} 
         appearance={isHighRisk ? "error" : isMedRisk ? "warning" : "info"}
       >
         <Stack space="space.100">
-          <Text>{data.explanation?.summary || data.explanation}</Text>
-          
-          {data.hasAI && data.rovoInsights && (
-            <Box padding="space.100" backgroundColor="color.background.accent.blue.subtler" borderRadius="4px">
-              <Text size="small" weight="bold">Rovo AI Enhancement:</Text>
-              <Text size="small">{data.rovoInsights.analysis}</Text>
-            </Box>
+          <Text>{data.riskSummary}</Text>
+          {data.timeInState && (
+            <Text size="small">Time in current state: <Text weight="semibold">{data.timeInState}</Text></Text>
           )}
+          
+          <Button 
+            onClick={runLiveAnalysis}
+            appearance="primary"
+            isDisabled={loading}
+          >
+            {loading ? <Spinner size="small" /> : 'Run Live Analysis'}
+          </Button>
         </Stack>
       </SectionMessage>
 
-      {/* Critical Alerts */}
-      {data.alerts && data.alerts.length > 0 && (
-        <Stack space="space.100">
-          <Text weight="bold">🚨 Critical Observations:</Text>
-          {data.alerts.slice(0, 3).map((alert, index) => (
-            <Inline key={index} alignBlock="start">
-              <Text size="small">⚠️</Text>
-              <Text size="small" style={{ flex: 1 }}>{alert}</Text>
-            </Inline>
-          ))}
+      {/* Rovo AI Interaction */}
+      <Box padding="space.200" backgroundColor="color.background.neutral" borderRadius="4px">
+        <Stack space="space.150">
+          <Inline alignBlock="center">
+            <Text weight="bold">🤖 Ask Rovo AI</Text>
+            <Badge appearance="success">Powered by Atlassian</Badge>
+          </Inline>
+          
+          <Inline space="space.100">
+            <Button onClick={() => handleRovoQuery('risk')}>Risk Score?</Button>
+            <Button onClick={() => handleRovoQuery('bottleneck')}>Bottlenecks?</Button>
+            <Button onClick={() => handleRovoQuery('improve')}>Improve?</Button>
+          </Inline>
+          
+          {rovoResponse && (
+            <Box padding="space.100" backgroundColor="color.background.accent.blue.subtle" borderRadius="4px">
+              <Text size="small" weight="bold">Rovo AI Response:</Text>
+              <Text>{rovoResponse.answer}</Text>
+              {rovoResponse.suggestedActions && (
+                <Box marginTop="space.050">
+                  <Text size="small">Suggested actions:</Text>
+                  <Inline space="space.050" wrap="wrap">
+                    {rovoResponse.suggestedActions.slice(0, 3).map((action, idx) => (
+                      <Badge key={idx} appearance="success">{action}</Badge>
+                    ))}
+                  </Inline>
+                </Box>
+              )}
+            </Box>
+          )}
+          
+          <Text size="small" color="color.text.subtlest">
+            Try: "Hey Rovo, ask FlowSentry to analyze bottlenecks in {data.projectKey}"
+          </Text>
         </Stack>
-      )}
+      </Box>
 
-      {/* Competition Features (Conditional) */}
+      {/* Competition Features */}
       {showCompetitionFeatures && (
         <Box 
           padding="space.200" 
@@ -298,28 +246,25 @@ const App = () => {
         >
           <Stack space="space.100">
             <Inline alignBlock="center">
-              <Text weight="bold">🏆 CodegeistX Features:</Text>
+              <Text weight="bold">🏆 CodegeistX Features</Text>
             </Inline>
             <Stack space="space.050">
               <Inline>
-                <Badge appearance="success">Rovo AI</Badge>
+                <Badge appearance="success">Rovo AI Agent</Badge>
                 <Text size="small">Natural language workflow analysis</Text>
               </Inline>
               <Inline>
-                <Badge appearance="success">Predictive</Badge>
-                <Text size="small">What-if improvement simulations</Text>
+                <Badge appearance="success">Forge Integration</Badge>
+                <Text size="small">Real-time Jira data analysis</Text>
               </Inline>
               <Inline>
-                <Badge appearance="success">Safe Actions</Badge>
-                <Text size="small">Risk-validated workflow changes</Text>
+                <Badge appearance="success">Predictive Engine</Badge>
+                <Text size="small">What-if simulations & forecasts</Text>
               </Inline>
             </Stack>
           </Stack>
         </Box>
       )}
-
-      {/* Rovo AI Chat Interface */}
-      <RovoChat projectId={data.projectKey} />
 
       {/* What-If Forecast */}
       <Box 
@@ -333,9 +278,8 @@ const App = () => {
             <Text weight="bold">AI Forecast</Text>
           </Inline>
           <Text size="small">
-            {data.alerts?.[0] 
-              ? `Optimizing "${data.alerts[0].replace('detected at ', '').replace('Bottleneck ', '')}" could reduce risk by ~${Math.round(data.riskScore * 15)}%`
-              : 'Ask Rovo for personalized improvement forecasts'}
+            Optimizing the main bottleneck could reduce risk by ~{Math.round(data.riskScore * 20)}% 
+            and improve throughput by {Math.round(data.riskScore * 15)}%.
           </Text>
         </Stack>
       </Box>

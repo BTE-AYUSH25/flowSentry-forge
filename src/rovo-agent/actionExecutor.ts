@@ -62,10 +62,11 @@ export class RovoActionExecutor {
         safetyVerified: true
       };
       
-    } catch (error) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       return {
         success: false,
-        message: `Action failed: ${error.message}`,
+        message: `Action failed: ${errorMessage}`,
         changes: [],
         safetyVerified: false
       };
@@ -85,7 +86,9 @@ export class RovoActionExecutor {
       return { safe: true, reason: 'No baseline risk data', riskChange: 0 };
     }
     
-    const currentRisk = snapshot.riskScore?.overallScore || 0.5;
+    // Type assertion for snapshot
+    const typedSnapshot = snapshot as { riskScore?: { overallScore?: number } };
+    const currentRisk = typedSnapshot.riskScore?.overallScore || 0.5;
     
     // Simulate risk change (simplified - would be more complex in production)
     let riskChange = 0;

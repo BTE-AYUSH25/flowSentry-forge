@@ -11,7 +11,7 @@ async function runCompetitionDemo(mode?: 'full' | 'quick' | 'technical') {
 
   try {
     // Simple import without complex dependencies
-    const { CompetitionShowcase } = await import('./../src/competition/showcase.ts');
+    const { CompetitionShowcase } = await import('./../src/competition/showcase');
     
     // Initialize showcase
     const showcase = new CompetitionShowcase('CODEGEIST-PROJ');
