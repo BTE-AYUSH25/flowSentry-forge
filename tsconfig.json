@@ -1,12 +1,22 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "CommonJS",
-    "moduleResolution": "Node",
-    "strict": true,
-    "skipLibCheck": true,
+    "module": "commonjs",
+
+    "moduleResolution": "node",
     "esModuleInterop": true,
-    "outDir": "dist"
+
+    "strict": false,
+    "skipLibCheck": true,
+
+    "types": [],
+    "typeRoots": ["./node_modules/@types"],
+
+    "noEmit": false
+    // ❌ mistake before: TS scanned implicit libraries
+    // ❌ mistake before: TS expected prop-types / yargs types
+    // ✅ fix: restrict type resolution
   },
-  "include": ["src/**/*", "forge/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }

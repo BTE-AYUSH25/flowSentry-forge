@@ -1,76 +1,44 @@
 app:
-  id: ari:cloud:ecosystem::app/f0631c69-d671-47ec-bebe-f607baf1a3a4  # REPLACE WITH YOURS
+  id: ari:cloud:ecosystem::app/f0631c69-d671-47ec-bebe-f607baf1a3a4
   runtime:
-    name: nodejs22.x
+    name: nodejs20.x
+    # ❌ mistake before: nodejs22.x (causes bundling instability)
 
 permissions:
   scopes:
     - read:jira-work
     - read:jira-user
-    - read:issue-type
-    - read:project
-    - read:jira-settings
-    - read:automation-rule
-    - storage:app
     - write:jira-work
-  
-  # 🏆 REQUIRED FOR "BEST ROVO APPS" BONUS PRIZE
-  rovo:
-    agents:
-      - key: flowsentry-guardian
-        description: "AI workflow analyst that detects bottlenecks and risks in Jira workflows"
-        systemPrompt: |
-          You are FlowSentry Guardian, an AI expert in Jira workflow optimization. 
-          You analyze workflow bottlenecks, automation conflicts, and structural risks.
-          You provide clear explanations and data-backed improvement suggestions.
-          When users ask about workflow health, use the attached FlowSentry functions.
+    - manage:jira-project
+    - storage:app
 
 modules:
-  # 1. SIDEBAR GLANCE (Appears on every Jira issue)
+  # ---------------- ISSUE GLANCE ----------------
   jira:issueGlance:
     - key: flowsentry-glance
       title: FlowSentry Risk
       resource: main
       resolver:
-        function: resolver
+        function: backend
       label: "🤖 Analyzing..."
       icon: https://developer.atlassian.com/platform/forge/images/issue-panel-icon.svg
 
-  # 2. DETAILED PANEL (Full dashboard view)
+  # ---------------- ISSUE PANEL ----------------
   jira:issuePanel:
     - key: flowsentry-panel
       title: FlowSentry AI Insights
       icon: https://developer.atlassian.com/platform/forge/images/issue-panel-icon.svg
       resource: main
       resolver:
-        function: resolver
+        function: backend
 
-  # 3. FORGE FUNCTIONS (Backend logic)
+  # ---------------- SINGLE BACKEND FUNCTION ----------------
   function:
-    - key: resolver
+    - key: backend
       handler: index.handler
-    - key: analyze-project-risk
-      handler: index.analyzeProjectRisk
-    - key: get-bottleneck-details
-      handler: index.getBottleneckDetails
-    - key: rovo-query-handler
-      handler: index.rovoQueryHandler
-
-  # 4. 🏆 ROVO AI MODULES (Required for bonus prize)
-  rovo:agent:
-    - key: flowsentry-guardian
-      function: flowsentry-guardian-function
-      openaiModel: gpt-4o-mini
-
-  rovo:action:
-    - key: analyze-project-risk-action
-      agent: flowsentry-guardian
-      function: analyze-project-risk
-      description: "Run FlowSentry risk analysis on a Jira project"
-    - key: get-bottleneck-details-action
-      agent: flowsentry-guardian
-      function: get-bottleneck-details
-      description: "Get detailed bottleneck analysis from FlowSentry"
+      # ❌ mistake before:
+      # - multiple functions declared
+      # - Forge resolver apps require ONE function only
 
 resources:
   - key: main

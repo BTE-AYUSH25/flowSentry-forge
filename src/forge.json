@@ -1,0 +1,21 @@
+{
+  "environment": {
+    "demo": {
+      "useMockData": true,
+      "sampleProjectId": "DEMO"
+    },
+    "production": {
+      "useMockData": false,
+      "cacheDuration": 3600
+    }
+  },
+  "jira": {
+    "maxIssuesPerAnalysis": 100,
+    "cacheTTL": 300000,
+    "bottleneckThreshold": 2.0
+  },
+  "rovo": {
+    "maxResponseTime": 5000,
+    "confidenceThreshold": 0.7
+  }
+}
