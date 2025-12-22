@@ -2,7 +2,6 @@ app:
   id: ari:cloud:ecosystem::app/f0631c69-d671-47ec-bebe-f607baf1a3a4
   runtime:
     name: nodejs20.x
-    # ❌ mistake before: nodejs22.x (causes bundling instability)
 
 permissions:
   scopes:
@@ -13,7 +12,6 @@ permissions:
     - storage:app
 
 modules:
-  # ---------------- ISSUE GLANCE ----------------
   jira:issueGlance:
     - key: flowsentry-glance
       title: FlowSentry Risk
@@ -23,7 +21,6 @@ modules:
       label: "🤖 Analyzing..."
       icon: https://developer.atlassian.com/platform/forge/images/issue-panel-icon.svg
 
-  # ---------------- ISSUE PANEL ----------------
   jira:issuePanel:
     - key: flowsentry-panel
       title: FlowSentry AI Insights
@@ -32,13 +29,9 @@ modules:
       resolver:
         function: backend
 
-  # ---------------- SINGLE BACKEND FUNCTION ----------------
   function:
     - key: backend
       handler: index.handler
-      # ❌ mistake before:
-      # - multiple functions declared
-      # - Forge resolver apps require ONE function only
 
 resources:
   - key: main

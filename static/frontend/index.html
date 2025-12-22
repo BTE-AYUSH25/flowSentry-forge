@@ -1,11 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <meta charset="UTF-8" />
     <title>FlowSentry</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 12px;
+      }
+      .card {
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 12px;
+      }
+      .title {
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="./index.jsx"></script>
+    <div class="card">
+      <div class="title">FlowSentry Risk Analysis</div>
+      <p>Risk Score: <strong>0.72</strong></p>
+      <p>Bottlenecks: REVIEW, IN_PROGRESS</p>
+      <p>Recommendation: Add parallel review or set 24h SLA</p>
+      <p><em>Demo Mode</em></p>
+    </div>
   </body>
 </html>
