@@ -1,28 +1,32 @@
 app:
   id: ari:cloud:ecosystem::app/f0631c69-d671-47ec-bebe-f607baf1a3a4
   runtime:
-    name: nodejs22.x
+    name: nodejs20.x
 
 permissions:
   scopes:
     - read:jira-work
     - storage:app
-    - write:jira-work # Added for Advanced "Guardian" features
+    - write:jira-work
+
+  # Rovo AI Agent capabilities
+
 
 modules:
-  # 1. SIDEBAR GLANCE (Advanced - High Visibility)
+  # 1. SIDEBAR GLANCE (Enhanced with Rovo AI)
   jira:issueGlance:
     - key: flowsentry-glance
-      title: FlowSentry Risk
+      title: FlowSentry AI Risk
       resource: main
       resolver:
         function: flowsentry-ui-resolver
-      label: "Risk: Analyzing..."
+      label: "�� AI Analyzing..."
+      icon: https://developer.atlassian.com/platform/forge/images/issue-panel-icon.svg
 
-  # 2. YOUR ORIGINAL PANEL (Detailed Insights)
+  # 2. DETAILED PANEL (With Rovo Chat)
   jira:issuePanel:
     - key: flowsentry-panel
-      title: FlowSentry Detailed Insights
+      title: FlowSentry AI Insights
       icon: https://developer.atlassian.com/platform/forge/images/issue-panel-icon.svg
       resource: main
       resolver:
@@ -34,6 +38,10 @@ modules:
       handler: index.uiResolver
     - key: flowsentry-demo
       handler: index.runDemoAnalysis
+    - key: rovo-query
+      handler: index.rovoQueryHandler
+    - key: competition-report
+      handler: index.competitionReportHandler
 
 resources:
   - key: main

@@ -1,11 +1,7 @@
-// src/index.ts
+// src/index.ts - ENHANCED WITH ROVO AI
 
 /**
- * SYSTEM ORCHESTRATOR (Advanced Version)
- * * Purpose:
- * - Synchronize Modules 1 → 9
- * - Implement Proactive "Guardian" Logic (Auto-flagging)
- * - Bridge Backend Analysis to Frontend Storage
+ * SYSTEM ORCHESTRATOR (Enhanced with Rovo AI)
  */
 
 import { TimingAnalyzerError } from "./timing-analyzer/timingAnalyzer";
@@ -18,13 +14,16 @@ import { computeRisk } from "./risk-engine/riskEngine";
 import { explainRisk } from "./explanation-engine/explanationEngine";
 import { save, read } from "./storage/storageAdapter";
 
-// External providers (Mocks for Demo/Submission)
+// Rovo AI Agent Integration
+import { FlowSentryRovoAgent } from "./rovo-agent/rovoAdapter";
+import { CompetitionMode } from "./competition/competition-mode";
+
+// External providers
 import { jiraClient } from "./providers/jiraClient.mock";
 import { ruleProvider } from "./providers/ruleProvider.mock";
 
 /**
- * ENTRYPOINT: Webhook / Trigger Handler
- * Triggered by: Issue Transitions or Manual Scans
+ * ENTRYPOINT: Webhook / Trigger Handler (Enhanced)
  */
 export async function handleJiraWebhook(rawEvent: any) {
   // 1. INGESTION (Module 1)
@@ -72,46 +71,138 @@ export async function handleJiraWebhook(rawEvent: any) {
   // 8. STORAGE PERSISTENCE (Module 9)
   const snapshotKey = `snapshot:${normalizedEvent.projectId}`;
   await save(snapshotKey, {
-    riskScore: riskScore.overallScore, // Simplified for UI consumption
+    riskScore: riskScore.overallScore,
     explanation: explanation,
     alerts: [...graphAnalysis.deadEnds, ...timingAnalysis.bottlenecks]
   });
 
-  // 9. THE "GUARDIAN" MOVE (Advanced Betterment)
-  // If risk is critical (>0.8), we would theoretically call Jira API to flag the issue.
-  if (riskScore.overallScore > 0.8) {
-     console.log(`[FlowSentry] CRITICAL RISK on ${normalizedEvent.issueId}: Initiating Guard Action.`);
-     // await jira.issue(normalizedEvent.issueId).edit({ fields: { customfield_flag: "Impediment" } });
+  // 🆕 9. ROVO AI AGENT ANALYSIS (Module 11 - Optional Enhancement)
+  if (process.env.ENABLE_ROVO_AI === 'true') {
+    try {
+      const rovoAgent = new FlowSentryRovoAgent(normalizedEvent.projectId);
+      
+      // Auto-analyze high-risk events
+      if (riskScore.overallScore > 0.6) {
+        const rovoAnalysis = await rovoAgent.processQuery(
+          `High risk detected (${riskScore.overallScore.toFixed(2)}). Analyze root causes.`
+        );
+        
+        await save(`rovo:${normalizedEvent.projectId}`, {
+          ...rovoAnalysis,
+          triggeredBy: 'high-risk-event',
+          triggeredAt: new Date().toISOString()
+        });
+        
+        console.log(`[Rovo AI] Analysis completed for ${normalizedEvent.projectId}`);
+      }
+    } catch (rovoError) {
+  const errorMessage = rovoError instanceof Error ? rovoError.message : 'Unknown error';
+  console.warn('[Rovo AI] Agent analysis skipped:', errorMessage);
+  // Non-critical - main flow continues
+}
   }
 
-  return { status: "OK" };
+  // 🆕 10. COMPETITION MODE FEATURES (Module 12)
+  if (process.env.COMPETITION_MODE === 'true') {
+    CompetitionMode.enable();
+    console.log('[Competition Mode] Event processed with enhanced features');
+  }
+
+  // 11. THE "GUARDIAN" MOVE (Original Advanced Feature)
+  if (riskScore.overallScore > 0.8) {
+     console.log(`[FlowSentry] CRITICAL RISK on ${normalizedEvent.issueId}: Initiating Guard Action.`);
+  }
+
+  return { status: "OK", riskScore: riskScore.overallScore };
 }
 
 /**
- * UI RESOLVER (Read-Only)
- * Significance: Decouples UI performance from heavy analysis logic.
+ * UI RESOLVER (Enhanced with Rovo data)
  */
 export async function getRiskSnapshot(event: any) {
   const issueKey = event.context.extension.issue.key;
   const projectKey = issueKey.split("-")[0];
 
-  // Fetch the latest prepared analysis from Module 9
+  // Fetch the latest prepared analysis
   const snapshot: any = await read(`snapshot:${projectKey}`);
+  const rovoInsights: any = await read(`rovo:${projectKey}`);
 
   return {
     issueKey,
     projectKey,
-    ...(snapshot ?? {
-      riskScore: 0,
-      explanation: { summary: "Scanning project workflow health...", details: [] },
-      alerts: []
-    })
+    riskScore: snapshot?.riskScore || 0,
+    explanation: snapshot?.explanation || { 
+      summary: "Analyzing workflow health...", 
+      details: [] 
+    },
+    alerts: snapshot?.alerts || [],
+    // 🆕 Rovo AI enhancements
+    rovoInsights: rovoInsights || null,
+    hasAI: !!rovoInsights,
+    competitionMode: process.env.COMPETITION_MODE === 'true'
   };
 }
 
 /**
- * DEMO HANDLER
- * Significance: Allows judges to see the "Red" state instantly during the video.
+ * 🆕 ROVO QUERY HANDLER
+ */
+export async function rovoQueryHandler(event: any) {
+  const { projectId, query } = event.payload;
+  
+  try {
+    const agent = new FlowSentryRovoAgent(projectId);
+    const response = await agent.processQuery(query);
+    
+    // Store for UI access
+    await save(`rovo-query:${projectId}:${Date.now()}`, {
+      query,
+      response,
+      timestamp: new Date().toISOString()
+    });
+    
+    return {
+      success: true,
+      ...response
+    };
+  } catch (error:any) {
+    return {
+      success: false,
+      error: error.message,
+      analysis: "Unable to process query at this time.",
+      suggestedActions: ["Check workflow data availability", "Try again in a moment"]
+    };
+  }
+}
+
+/**
+ * 🆕 COMPETITION REPORT HANDLER
+ */
+export async function competitionReportHandler(event: any) {
+  const { projectId } = event.payload;
+  
+  try {
+    if (process.env.COMPETITION_MODE !== 'true') {
+      throw new Error('Competition mode not enabled');
+    }
+    
+    const report = await CompetitionMode.generateSubmissionReport(projectId);
+    
+    return {
+      success: true,
+      report,
+      generatedAt: new Date().toISOString()
+    };
+  } catch (error:any) {
+    return {
+      success: false,
+      error: error.message,
+      report: null
+    };
+  }
+}
+
+/**
+ * DEMO HANDLER (Enhanced)
  */
 export async function runDemoAnalysis(event: any) {
   const issueKey = event.context.extension.issue.key;
@@ -126,7 +217,16 @@ export async function runDemoAnalysis(event: any) {
     alerts: [
       "Bottleneck detected at IN_PROGRESS",
       "Dead-end state detected: DONE"
-    ]
+    ],
+    // 🆕 Added Rovo demo data
+    rovoInsights: {
+      analysis: "Rovo AI analysis shows review process is major bottleneck.",
+      suggestedActions: [
+        "Add parallel review path",
+        "Set SLA of 24h for IN_REVIEW state"
+      ],
+      confidence: 0.85
+    }
   };
 
   await save(`snapshot:${projectKey}`, demoSnapshot);
@@ -135,5 +235,7 @@ export async function runDemoAnalysis(event: any) {
 
 // Forge Entrypoint
 export async function run() {
-  return { status: "OK" };
+  return { status: "OK", version: "2.0.0", features: ["rovo-ai", "competition-mode"] };
 }
+// Add this export to satisfy the manifest's handler requirement
+export const uiResolver = getRiskSnapshot;

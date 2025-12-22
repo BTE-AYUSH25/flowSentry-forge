@@ -1,0 +1,40 @@
+app:
+  id: ari:cloud:ecosystem::app/f0631c69-d671-47ec-bebe-f607baf1a3a4
+  runtime:
+    name: nodejs22.x
+
+permissions:
+  scopes:
+    - read:jira-work
+    - storage:app
+    - write:jira-work # Added for Advanced "Guardian" features
+
+modules:
+  # 1. SIDEBAR GLANCE (Advanced - High Visibility)
+  jira:issueGlance:
+    - key: flowsentry-glance
+      title: FlowSentry Risk
+      resource: main
+      resolver:
+        function: flowsentry-ui-resolver
+      label: "Risk: Analyzing..."
+
+  # 2. YOUR ORIGINAL PANEL (Detailed Insights)
+  jira:issuePanel:
+    - key: flowsentry-panel
+      title: FlowSentry Detailed Insights
+      icon: https://developer.atlassian.com/platform/forge/images/issue-panel-icon.svg
+      resource: main
+      resolver:
+        function: flowsentry-ui-resolver
+
+  # 3. FUNCTIONS & RESOLVERS
+  function:
+    - key: flowsentry-ui-resolver
+      handler: index.uiResolver
+    - key: flowsentry-demo
+      handler: index.runDemoAnalysis
+
+resources:
+  - key: main
+    path: static/frontend
