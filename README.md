@@ -95,7 +95,10 @@ Human-readable suggestions such as:
 
 No schema changes.
 No setup.
-Works instantly on existing Jira data.
+Works instantly on existing Jira data
+-------------
+![alt text](https://raw.githubusercontent.com/BTE-AYUSH25/flowSentry-forge/main/docs/assets/Infographic.png)
+
 
 ---
 
