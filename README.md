@@ -1,157 +1,258 @@
-This is a fully advanced, "best-in-class" README for your **FlowSentry 2.0** project. It is specifically tailored for high-impact viewing by GitHub visitors and Atlassian Codegeist judges, emphasizing your hybrid deterministic-AI architecture and Rovo integration.
 
-***
 
-# 🚦 FlowSentry 2.0: Intelligent Workflow Guard
-### **The Next-Gen Risk Engine for Jira & Rovo AI**
+---
 
-[![Atlassian Forge](https://img.shields.io/badge/Atlassian-Forge-blue?logo=atlassian&style=flat-square)](https://developer.atlassian.com/platform/forge/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript&style=flat-square)](https://www.typescriptlang.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-20.x-green?logo=node.js&style=flat-square)](https://nodejs.org/)
+# 🚦 FlowSentry 2.0 — Intelligent Workflow Guard for Jira
+
+### *Predictive Workflow Intelligence for Atlassian Teams*
+
+[![Atlassian Forge](https://img.shields.io/badge/Atlassian-Forge-blue?logo=atlassian\&style=flat-square)](https://developer.atlassian.com/platform/forge/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript\&style=flat-square)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-20.x-green?logo=node.js\&style=flat-square)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![CodegeistX Submission](https://img.shields.io/badge/Codegeist-Unleashed_2024-purple?style=for-the-badge&logo=atlassian)](https://devpost.com/software/flowsentry-intelligent-workflow-guard-for-jira)
+[![Codegeist 2024](https://img.shields.io/badge/Codegeist-Unleashed_2024-purple?style=for-the-badge\&logo=atlassian)](https://devpost.com/software/flowsentry-intelligent-workflow-guard-for-jira)
 
-> **"Jira answers 'What happened?' — FlowSentry answers 'What is about to go wrong, and why?'"**
-> FlowSentry is a native Atlassian Forge application that detects workflow bottlenecks, structural deadlocks, and automation conflicts before they derail your sprint.
+> **“Jira tells you what happened.
+> FlowSentry tells you what’s about to go wrong — and why.”**
+
+FlowSentry is a **native Atlassian Forge application** that continuously analyzes Jira workflows to detect **bottlenecks, structural risks, and automation conflicts** before they impact delivery.
 
 ---
 
 ## 📖 Table of Contents
-- [🚨 Problem Statement](#-problem-statement)
-- [💡 The FlowSentry Solution](#-the-flowsentry-solution)
-- [🚀 Key Innovations (2.0 Highlights)](#-key-innovations-20-highlights)
-- [🏗️ Technical Architecture](#-technical-architecture)
-- [🧪 Simulation & What-If Engine](#-simulation--what-if-engine)
-- [🤖 Rovo AI Integration](#-rovo-ai-integration)
-- [📊 Visual Insights](#-visual-insights)
-- [🛠️ Installation & Setup](#-installation--setup)
-- [⚖️ Design Decisions](#-design-decisions)
-- [📜 License](#-license)
+
+* [🚨 Problem Statement](#-problem-statement)
+* [💡 The FlowSentry Solution](#-the-flowsentry-solution)
+* [🚀 Key Innovations (v2.0)](#-key-innovations-v20)
+* [🏗️ System Architecture](#️-system-architecture)
+* [🤖 Rovo AI Integration](#-rovo-ai-integration)
+* [📊 Visual Insights](#-visual-insights)
+* [🛠 Installation & Setup](#-installation--setup)
+* [⚖️ Design Decisions](#️-design-decisions)
+* [📜 License](#-license)
 
 ---
 
 ## 🚨 Problem Statement
-Jira workflows are the heartbeat of delivery, but they often evolve into "Black Boxes."
-- **Hidden Cycles:** Issues loop between `REVIEW` and `REWORK` without visibility.
-- **Silent Bottlenecks:** A specific state (e.g., `UAT`) consumes 3x more time than average, but metrics only show late delivery.
-- **Rule Collisions:** Automated rules override each other, creating race conditions and "stuck" tickets.
-- **The Core Gap:** Teams discover delivery risks **after** a sprint failure. 
+
+Jira workflows evolve organically — and eventually silently break.
+
+Teams continuously add:
+
+* automation rules
+* approval gates
+* custom transitions
+* exceptions for edge cases
+
+Over time this creates **invisible complexity**.
+
+### Common Failures
+
+* **Hidden loops:** Issues bounce endlessly between states like `REVIEW → REWORK`.
+* **Silent bottlenecks:** States such as `QA` or `IN_PROGRESS` silently absorb days of time.
+* **Automation conflicts:** Multiple rules modify the same fields, causing race conditions.
+* **Zero foresight:** Jira reports *what happened*, not *what is about to fail*.
+
+Teams discover problems **after** a sprint is already lost.
 
 ---
 
 ## 💡 The FlowSentry Solution
-FlowSentry provides a **native intelligence layer** directly inside the Jira Issue View.
 
-1. **Risk Scoring (0–1):** A weighted, deterministic score based on structure, timing, and automation.
-2. **Bottleneck Detection:** Automatically flags states where issues disproportionately accumulate time.
-3. **Actionable Recommendations:** Moves beyond data by suggesting concrete fixes (e.g., "Add parallel review path").
-4. **Zero Configuration:** Leverages existing Jira workflow data automatically.
+FlowSentry is a **native workflow intelligence layer** embedded directly into Jira.
+
+It continuously analyzes:
+
+* workflow structure,
+* state transitions,
+* automation interactions,
+* historical timing patterns,
+
+…and turns them into **actionable insights** — not dashboards.
+
+### What FlowSentry Provides
+
+#### 🔍 Risk Score (0–1)
+
+A deterministic score derived from:
+
+* graph complexity
+* state congestion
+* automation overlap
+
+#### ⏱ Bottleneck Detection
+
+Identifies states with abnormal dwell time compared to sprint baselines.
+
+#### 🧠 Actionable Recommendations
+
+Human-readable suggestions such as:
+
+* *“Add parallel review to reduce queue time.”*
+* *“Add SLA to IN_PROGRESS to prevent stagnation.”*
+
+#### ⚙️ Zero Configuration
+
+No schema changes.
+No setup.
+Works instantly on existing Jira data.
 
 ---
 
-## 🚀 Key Innovations (2.0 Highlights)
-### 🔮 Predictive "What-If" Engine
-Move from reactive to proactive. FlowSentry simulates potential workflow changes to project risk reduction.
-*   *Example:* "What if we remove the mandatory approval at step 4?" -> **Projected Risk: -22%**
+## 🚀 Key Innovations (v2.0)
 
-### 🤖 Atlassian Rovo Agent Interface
-Query your project’s health in plain English via the Rovo Agent Bridge.
-*   *Query:* "Why is our review process slow this month?"
-*   *Response:* "Timing analysis shows 42% of issues stall in 'INTERNAL REVIEW' due to a cyclic transition back to 'TODO'."
+### 🔮 Predictive “What-If” Engine
+
+Simulate workflow changes before deploying them.
+
+> *“What happens if we remove the QA gate?”*
+> → Predicted risk reduction: **−22%**
+
+---
+
+### 🤖 Rovo AI Integration
+
+FlowSentry integrates with **Atlassian Rovo** to enable natural language analysis.
+
+Examples:
+
+* *“Why are tickets stuck in Review?”*
+* *“Which step is slowing delivery this sprint?”*
+
+Responses are:
+
+* grounded in real metrics
+* explainable
+* constrained by deterministic rules (no hallucinations)
+
+---
 
 ### 🛡️ Safe Action Pipeline
-A validated execution layer that checks for structural safety before suggesting workflow modifications.
+
+Every recommendation is validated to ensure:
+
+* no structural breakage
+* no cyclic transitions
+* no unsafe workflow mutations
 
 ---
 
-## 🏗️ Technical Architecture
-FlowSentry is built on a **Modular Contract-Based Architecture**, ensuring high auditability and enterprise safety.
+## 🏗️ System Architecture
 
-![Architecture Infographic](https://raw.githubusercontent.com/BTE-AYUSH25/flowSentry-forge/main/docs/assets/Infographic.png)
-*(Note: Replace with your actual repo asset path if needed)*
+FlowSentry uses a **modular, contract-driven architecture** optimized for auditability and scale.
 
-### **Core Analysis Pipeline**
-1.  **Ingestion Module:** Normalizes raw Jira Webhook events.
-2.  **Workflow Resolver:** Builds a canonical graph structure of project states.
-3.  **Graph Analyzer:** Detects structural flaws (cycles, dead ends, unreachable states).
-4.  **Timing Analyzer:** Measures per-state duration averages and standard deviations.
-5.  **Risk Engine:** Aggregates findings into a weighted score.
+```mermaid
+graph TD
+    A[Jira Webhooks] --> M1[01 Ingestion]
+    M1 --> M2[02 Workflow Resolver]
 
----
+    subgraph Analysis Layer
+        M2 --> M3[03 Graph Analyzer]
+        M2 --> M4[04 Timing Analyzer]
+        M2 --> M5[05 Rule Analyzer]
+    end
 
-## 🤖 Rovo AI Integration
-FlowSentry integrates with **Atlassian Rovo** to provide a Natural Language Query (NLQ) interface. 
+    M3 & M4 & M5 --> M6[06 Risk Engine]
 
-| Feature | Description |
-| :--- | :--- |
-| **NLQ Analysis** | Process natural language project queries. |
-| **Data Points** | Extracts structured metrics for AI consumption. |
-| **Confidence Scoring** | AI responses are weighted against deterministic analysis facts. |
+    M6 --> M7[07 Explanation Engine]
+
+    subgraph Intelligence Layer
+        M7 --> M10[10 What-If Engine]
+        M10 --> M11[11 Rovo AI Bridge]
+    end
+
+    M11 --> M12[12 Presentation Orchestrator]
+    M12 --> M9[09 Persistence]
+    M9 --> M8[08 Jira UI]
+```
 
 ---
 
 ## 📊 Visual Insights
 
-### **Jira Native Integration**
-FlowSentry renders inside the **Issue Glance** for high-level risk and the **Issue Panel** for deep-dive diagnostics.
+FlowSentry renders **directly inside Jira**:
 
-![Jira UI Screenshot](https://raw.githubusercontent.com/BTE-AYUSH25/flowSentry-forge/main/docs/assets/Jira_UI_Screenshot.png)
-*(Note: Replace with your actual repo asset path if needed)*
+* Issue Glance → high-level risk overview
+* Issue Panel → deep diagnostic insights
+
+![Jira UI](https://raw.githubusercontent.com/BTE-AYUSH25/flowSentry-forge/main/docs/assets/Jira_UI_Screenshot.png)
 
 ---
 
-## 🛠️ Installation & Setup
+## 🛠 Installation & Setup
 
-### **Prerequisites**
-- [Forge CLI](https://developer.atlassian.com/platform/forge/getting-started/) installed.
-- An Atlassian Cloud site with developer mode enabled.
+### Prerequisites
 
-### **Local Development**
+* Node.js 20+
+* Atlassian Forge CLI
+* Jira Cloud site
+
+### Local Development
+
 ```bash
-# 1. Install dependencies without peer-dependency noise
+# Install dependencies
 npm install --no-audit --no-fund --legacy-peer-deps
 
-# 2. Run the deterministic demo (No Jira access required)
+# Run local demo mode (no Jira required)
 npm run demo
 
-# 3. Deploy to your Forge site
+# Deploy to Forge
 forge deploy -e development
 
-# 4. Install in your Jira project
+# Install app in Jira
 forge install
 ```
 
 ---
 
-## ⚖️ Design Decisions & Trade-offs
-*   **Deterministic First:** We prioritize observable facts over LLM guesswork. AI is used only for **narrative explanation** and **simulations**, while the Risk Score remains 100% auditable.
-*   **Forge-Native:** By building on Forge, we ensure zero data egress. Project data never leaves the Atlassian cloud, making it suitable for security-conscious enterprises.
-*   **Hybrid Analysis:** Combining Graph Theory (Structure) + Statistics (Timing) + NLP (Rovo) creates a multi-dimensional view of team velocity.
+## ⚖️ Design Decisions
+
+* **Deterministic First**
+  AI enhances explanation — it never decides outcomes.
+
+* **Forge-Native Security**
+  No data leaves Atlassian infrastructure.
+
+* **Explainability > Black Box AI**
+  Every score is traceable to concrete signals.
 
 ---
 
-## 🧪 Evaluation Guide for Judges
-Judges can verify the technical depth of the project by:
-1.  **Running `npm run competition-demo`**: A full walkthrough of the Rovo-Agent-FlowSentry bridge.
-2.  **Testing Demo Mode**: Clearly labeled in the UI, this allows evaluation without 3 months of historical Jira data.
-3.  **Reviewing `contracts/lock.json`**: Our internal architecture ensures modules are isolated and fail-safe.
+## 🧪 Evaluation Guide (For Judges)
+
+To evaluate FlowSentry:
+
+1. Open any Jira issue with FlowSentry enabled
+2. View the **Risk Panel**
+3. Observe:
+
+   * Risk score
+   * Bottlenecks
+   * Recommendations
+4. (Optional) Run demo mode for simulated scenarios
 
 ---
 
-## 🚀 Future Roadmap
-*   **Sprint-level Risk Aggregation:** Summarizing risk across the entire backlog.
-*   **Confluence Autopilot:** Weekly workflow health reports generated as Confluence pages.
-*   **Custom Risk Weights:** Allowing teams to define what "critical" means for their unique process.
+## 🚀 Roadmap
+
+* Sprint-level risk aggregation
+* Org-wide workflow health dashboards
+* Confluence auto-reports
+* Configurable risk weight tuning
 
 ---
 
 ## 📜 License
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+
+MIT License — see [`LICENSE`](LICENSE)
 
 ---
 
-### **Submission Links**
-*   **Devpost:** [FlowSentry Submission](https://devpost.com/software/flowsentry-intelligent-workflow-guard-for-jira)
-*   **GitHub Repository:** [BTE-AYUSH25/flowSentry-forge](https://github.com/BTE-AYUSH25/flowSentry-forge)
+## 🔗 Links
 
-***
+* **Devpost:** [https://devpost.com/software/flowsentry-intelligent-workflow-guard-for-jira](https://devpost.com/software/flowsentry-intelligent-workflow-guard-for-jira)
+* **Repository:** [https://github.com/BTE-AYUSH25/flowSentry-forge](https://github.com/BTE-AYUSH25/flowSentry-forge)
+
+---
+
+---
