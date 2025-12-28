@@ -1,28 +1,68 @@
-name: FlowSentry CI
+name: FlowSentry CI/CD ✅
 
 on:
   push:
     branches: [ main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
-  build-and-demo:
+  verify:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [20.x]
+
     steps:
-      - name: Checkout repository
+      - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: 🟢 Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
-      - name: Install dependencies
-        run: npm install
+      - name: 📦 Install Dependencies
+        run: npm install --no-audit --no-fund --legacy-peer-deps
 
-      - name: TypeScript build check
-        run: npx tsc --noEmit
+      - name: 🛠️ Type Check (Production)
+        run: npx tsc --project tsconfig.json
 
-      - name: Run demo script
-        run: npx ts-node scripts/demo.ts
+      - name: 🧪 Run Local Logic Demo
+        # This uses your dev config to allow the .ts extensions used in scripts
+        run: npm run demo
+
+      - name: 🤖 Forge Validation (Lint)
+        # This ensures the manifest.yml and handler exports are valid for Atlassian
+        run: |
+          npm install -g @forge/cli
+          forge lint
+        env:
+          FORGE_EMAIL: ${{ secrets.FORGE_EMAIL }}
+          FORGE_API_TOKEN: ${{ secrets.FORGE_API_TOKEN }}
+          FORGE_USE_KEYTAR: 'false'
+
+  # Optional: Automatic Deployment to Development environment
+  deploy-dev:
+    needs: verify
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+      - name: 🟢 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - name: 📦 Install
+        run: npm install --legacy-peer-deps
+      - name: 🚀 Forge Deploy (Dev)
+        run: |
+          npm install -g @forge/cli
+          forge deploy -e development
+        env:
+          FORGE_EMAIL: ${{ secrets.FORGE_EMAIL }}
+          FORGE_API_TOKEN: ${{ secrets.FORGE_API_TOKEN }}
+          FORGE_USE_KEYTAR: 'false'
