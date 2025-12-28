@@ -1,292 +1,157 @@
+This is a fully advanced, "best-in-class" README for your **FlowSentry 2.0** project. It is specifically tailored for high-impact viewing by GitHub visitors and Atlassian Codegeist judges, emphasizing your hybrid deterministic-AI architecture and Rovo integration.
+
+***
+
+# 🚦 FlowSentry 2.0: Intelligent Workflow Guard
+### **The Next-Gen Risk Engine for Jira & Rovo AI**
+
+[![Atlassian Forge](https://img.shields.io/badge/Atlassian-Forge-blue?logo=atlassian&style=flat-square)](https://developer.atlassian.com/platform/forge/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript&style=flat-square)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-20.x-green?logo=node.js&style=flat-square)](https://nodejs.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![CodegeistX Submission](https://img.shields.io/badge/Codegeist-Unleashed_2024-purple?style=for-the-badge&logo=atlassian)](https://devpost.com/software/flowsentry-intelligent-workflow-guard-for-jira)
+
+> **"Jira answers 'What happened?' — FlowSentry answers 'What is about to go wrong, and why?'"**
+> FlowSentry is a native Atlassian Forge application that detects workflow bottlenecks, structural deadlocks, and automation conflicts before they derail your sprint.
 
 ---
 
-# 🚦 FlowSentry
-
-### Intelligent Workflow Risk & Bottleneck Analysis for Jira (Forge App)
-
-> **FlowSentry helps teams detect workflow bottlenecks, structural risks, and automation inefficiencies *before* they cause delivery delays — directly inside Jira.**
-
----
-
-## 📌 Table of Contents
-
-1. [Problem Statement](#-problem-statement)
-2. [Why Existing Jira Tools Fall Short](#-why-existing-jira-tools-fall-short)
-3. [Solution Overview](#-solution-overview)
-4. [Key Features](#-key-features)
-5. [How FlowSentry Works (Architecture)](#-how-flowsentry-works-architecture)
-6. [Risk Scoring Model (Explainable)](#-risk-scoring-model-explainable)
-7. [Jira Integration Details](#-jira-integration-details)
-8. [Demo Mode (Hackathon Safe)](#-demo-mode-hackathon-safe)
-9. [Technology Stack](#-technology-stack)
-10. [Local Development & Testing](#-local-development--testing)
-11. [How Judges Can Evaluate This App](#-how-judges-can-evaluate-this-app)
-12. [Design Decisions & Trade-offs](#-design-decisions--trade-offs)
-13. [Future Roadmap](#-future-roadmap)
-14. [License](#-license)
+## 📖 Table of Contents
+- [🚨 Problem Statement](#-problem-statement)
+- [💡 The FlowSentry Solution](#-the-flowsentry-solution)
+- [🚀 Key Innovations (2.0 Highlights)](#-key-innovations-20-highlights)
+- [🏗️ Technical Architecture](#-technical-architecture)
+- [🧪 Simulation & What-If Engine](#-simulation--what-if-engine)
+- [🤖 Rovo AI Integration](#-rovo-ai-integration)
+- [📊 Visual Insights](#-visual-insights)
+- [🛠️ Installation & Setup](#-installation--setup)
+- [⚖️ Design Decisions](#-design-decisions)
+- [📜 License](#-license)
 
 ---
 
-## ❓ Problem Statement
-
-Jira workflows evolve organically.
-
-Over time, teams add:
-
-* new states
-* automation rules
-* conditional transitions
-* SLA policies
-
-This leads to **hidden systemic problems**:
-
-* Issues get stuck in specific states (e.g. REVIEW)
-* Automations conflict or override each other
-* Cyclic or inefficient workflows emerge
-* Teams realize problems **only after sprint failure**
-
-### ❌ The Core Gap
-
-Jira answers:
-
-> *“What happened?”*
-
-Teams actually need:
-
-> *“What is about to go wrong — and why?”*
+## 🚨 Problem Statement
+Jira workflows are the heartbeat of delivery, but they often evolve into "Black Boxes."
+- **Hidden Cycles:** Issues loop between `REVIEW` and `REWORK` without visibility.
+- **Silent Bottlenecks:** A specific state (e.g., `UAT`) consumes 3x more time than average, but metrics only show late delivery.
+- **Rule Collisions:** Automated rules override each other, creating race conditions and "stuck" tickets.
+- **The Core Gap:** Teams discover delivery risks **after** a sprint failure. 
 
 ---
 
-## 🚫 Why Existing Jira Tools Fall Short
+## 💡 The FlowSentry Solution
+FlowSentry provides a **native intelligence layer** directly inside the Jira Issue View.
 
-| Tool            | Limitation      |
-| --------------- | --------------- |
-| Jira Reports    | Historical only |
-| Control Charts  | Reactive        |
-| Automation Logs | Fragmented      |
-| Dashboards      | Manual setup    |
-| AI summaries    | Non-explainable |
-
-None of these provide:
-
-* **Workflow-level risk**
-* **Explainable bottleneck detection**
-* **Actionable recommendations**
+1. **Risk Scoring (0–1):** A weighted, deterministic score based on structure, timing, and automation.
+2. **Bottleneck Detection:** Automatically flags states where issues disproportionately accumulate time.
+3. **Actionable Recommendations:** Moves beyond data by suggesting concrete fixes (e.g., "Add parallel review path").
+4. **Zero Configuration:** Leverages existing Jira workflow data automatically.
 
 ---
 
-## ✅ Solution Overview
+## 🚀 Key Innovations (2.0 Highlights)
+### 🔮 Predictive "What-If" Engine
+Move from reactive to proactive. FlowSentry simulates potential workflow changes to project risk reduction.
+*   *Example:* "What if we remove the mandatory approval at step 4?" -> **Projected Risk: -22%**
 
-**FlowSentry** is a **native Atlassian Forge app** that continuously analyzes Jira workflow behavior and surfaces **risk insights directly on each issue**.
+### 🤖 Atlassian Rovo Agent Interface
+Query your project’s health in plain English via the Rovo Agent Bridge.
+*   *Query:* "Why is our review process slow this month?"
+*   *Response:* "Timing analysis shows 42% of issues stall in 'INTERNAL REVIEW' due to a cyclic transition back to 'TODO'."
 
-It provides:
-
-* A **Risk Score**
-* Identified **bottleneck states**
-* **Concrete, actionable recommendations**
-
-All inside Jira — no external dashboards.
-
----
-
-## ✨ Key Features
-
-### 🔍 Workflow Bottleneck Detection
-
-Identifies states where issues disproportionately accumulate time.
-
-### 📊 Risk Scoring (0–1)
-
-Quantifies delivery risk using multiple deterministic signals.
-
-### 🧠 Explainable Analysis
-
-Every output is derived from observable workflow facts — no black box.
-
-### ⚙️ Zero Configuration
-
-Works out-of-the-box with existing Jira projects.
-
-### 🧪 Demo Mode
-
-Safe demonstration without requiring historical Jira data.
+### 🛡️ Safe Action Pipeline
+A validated execution layer that checks for structural safety before suggesting workflow modifications.
 
 ---
 
-## 🏗️ How FlowSentry Works (Architecture)
+## 🏗️ Technical Architecture
+FlowSentry is built on a **Modular Contract-Based Architecture**, ensuring high auditability and enterprise safety.
 
-### High-Level Flow
+![Architecture Infographic](https://raw.githubusercontent.com/BTE-AYUSH25/flowSentry-forge/main/docs/assets/Infographic.png)
+*(Note: Replace with your actual repo asset path if needed)*
 
-```
-Jira Events
-   ↓
-Event Ingestion (Forge Runtime)
-   ↓
-Workflow Analysis Engines
-   ├─ Graph Analyzer
-   ├─ Timing Analyzer
-   ├─ Automation Rule Analyzer
-   ↓
-Risk Scoring Engine
-   ↓
-Jira Issue UI (Glance + Panel)
-```
-
-### Core Design Principle
-
-> **Deterministic first, AI optional later**
-
-This ensures:
-
-* Predictable behavior
-* Explainability
-* Enterprise safety
+### **Core Analysis Pipeline**
+1.  **Ingestion Module:** Normalizes raw Jira Webhook events.
+2.  **Workflow Resolver:** Builds a canonical graph structure of project states.
+3.  **Graph Analyzer:** Detects structural flaws (cycles, dead ends, unreachable states).
+4.  **Timing Analyzer:** Measures per-state duration averages and standard deviations.
+5.  **Risk Engine:** Aggregates findings into a weighted score.
 
 ---
 
-## 📐 Risk Scoring Model (Explainable)
+## 🤖 Rovo AI Integration
+FlowSentry integrates with **Atlassian Rovo** to provide a Natural Language Query (NLQ) interface. 
 
-FlowSentry computes a **Risk Score ∈ [0, 1]** using weighted signals:
-
-| Signal               | Description                   |
-| -------------------- | ----------------------------- |
-| State Duration       | Time spent per workflow state |
-| Bottleneck Density   | Concentration of issues       |
-| Workflow Structure   | Cycles / dead ends            |
-| Automation Conflicts | Overlapping triggers/actions  |
-| SLA Pressure         | Time-based escalation risk    |
-
-### Example Output
-
-```
-Risk Score: 0.72
-Bottlenecks: REVIEW, IN_PROGRESS
-Recommendation: Add parallel review or enforce 24h SLA
-```
+| Feature | Description |
+| :--- | :--- |
+| **NLQ Analysis** | Process natural language project queries. |
+| **Data Points** | Extracts structured metrics for AI consumption. |
+| **Confidence Scoring** | AI responses are weighted against deterministic analysis facts. |
 
 ---
 
-## 🔗 Jira Integration Details
+## 📊 Visual Insights
 
-FlowSentry integrates using **Atlassian Forge UI Modules**:
+### **Jira Native Integration**
+FlowSentry renders inside the **Issue Glance** for high-level risk and the **Issue Panel** for deep-dive diagnostics.
 
-### Issue Glance
-
-* Quick visibility of risk
-* Appears in the issue sidebar
-
-### Issue Panel
-
-* Detailed analysis
-* Bottlenecks + recommendations
-
-### Forge Resolver Backend
-
-* Secure execution
-* Jira-scoped permissions
-* No external servers
+![Jira UI Screenshot](https://raw.githubusercontent.com/BTE-AYUSH25/flowSentry-forge/main/docs/assets/Jira_UI_Screenshot.png)
+*(Note: Replace with your actual repo asset path if needed)*
 
 ---
 
-## 🧪 Demo Mode (Hackathon Safe)
+## 🛠️ Installation & Setup
 
-To support judge evaluation without historical Jira data:
+### **Prerequisites**
+- [Forge CLI](https://developer.atlassian.com/platform/forge/getting-started/) installed.
+- An Atlassian Cloud site with developer mode enabled.
 
-* FlowSentry includes **Demo Mode**
-* Clearly labeled in UI
-* Uses realistic simulated signals
-* Preserves full analysis flow
-
-This ensures:
-
-* Immediate evaluation
-* No manual setup required
-* Transparent behavior
-
----
-
-## 🧰 Technology Stack
-
-| Layer        | Technology             |
-| ------------ | ---------------------- |
-| Platform     | Atlassian Forge        |
-| Language     | TypeScript             |
-| Runtime      | Node.js 20             |
-| UI           | Forge Custom UI        |
-| APIs         | Jira REST API          |
-| Architecture | Modular, deterministic |
-
----
-
-## 🛠️ Local Development & Testing
-
-### Install Dependencies
-
+### **Local Development**
 ```bash
-npm install
+# 1. Install dependencies without peer-dependency noise
+npm install --no-audit --no-fund --legacy-peer-deps
+
+# 2. Run the deterministic demo (No Jira access required)
+npm run demo
+
+# 3. Deploy to your Forge site
+forge deploy -e development
+
+# 4. Install in your Jira project
+forge install
 ```
-
-### Deploy App
-
-```bash
-forge deploy
-forge install --upgrade
-```
-
-### Demo Without Jira Data
-
-```bash
-npm run quick-demo
-```
-
----
-
-## 🧪 How Judges Can Evaluate This App
-
-Judges can verify:
-
-1. App installs successfully on Jira
-2. Issue Glance & Panel render correctly
-3. Risk score and bottlenecks are shown
-4. Demo mode works as documented
-5. Logic is explainable and non-trivial
-
-No additional setup required.
 
 ---
 
 ## ⚖️ Design Decisions & Trade-offs
+*   **Deterministic First:** We prioritize observable facts over LLM guesswork. AI is used only for **narrative explanation** and **simulations**, while the Risk Score remains 100% auditable.
+*   **Forge-Native:** By building on Forge, we ensure zero data egress. Project data never leaves the Atlassian cloud, making it suitable for security-conscious enterprises.
+*   **Hybrid Analysis:** Combining Graph Theory (Structure) + Statistics (Timing) + NLP (Rovo) creates a multi-dimensional view of team velocity.
 
-### Why deterministic analysis?
+---
 
-* Predictability
-* Trust
-* Auditability
-
-### Why not heavy ML?
-
-* Jira data is sparse & noisy
-* Explainability is critical
-* ML can be layered later for text explanations
-
-### Why Forge?
-
-* Native security
-* Zero data egress
-* Seamless Jira UX
+## 🧪 Evaluation Guide for Judges
+Judges can verify the technical depth of the project by:
+1.  **Running `npm run competition-demo`**: A full walkthrough of the Rovo-Agent-FlowSentry bridge.
+2.  **Testing Demo Mode**: Clearly labeled in the UI, this allows evaluation without 3 months of historical Jira data.
+3.  **Reviewing `contracts/lock.json`**: Our internal architecture ensures modules are isolated and fail-safe.
 
 ---
 
 ## 🚀 Future Roadmap
-
-* Sprint-level risk aggregation
-* Workflow health dashboards
-* Confluence auto-generated reports
-* Optional AI-generated explanations (non-decision-making)
-* Cross-project workflow comparison
-
-
+*   **Sprint-level Risk Aggregation:** Summarizing risk across the entire backlog.
+*   **Confluence Autopilot:** Weekly workflow health reports generated as Confluence pages.
+*   **Custom Risk Weights:** Allowing teams to define what "critical" means for their unique process.
 
 ---
 
+## 📜 License
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+
+---
+
+### **Submission Links**
+*   **Devpost:** [FlowSentry Submission](https://devpost.com/software/flowsentry-intelligent-workflow-guard-for-jira)
+*   **GitHub Repository:** [BTE-AYUSH25/flowSentry-forge](https://github.com/BTE-AYUSH25/flowSentry-forge)
+
+***
